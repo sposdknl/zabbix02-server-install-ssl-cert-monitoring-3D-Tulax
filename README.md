@@ -1,70 +1,204 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/Nv3bt8H1)
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=21956903&assignment_repo_type=AssignmentRepo)
-# Instalace Zabbix server 
-Independent work - Zabbix server installation using Vagrant and automation
+Projekt spustíme pomocí příkazu:
 
-Samostatná práce - instalace Zabbix serveru pomocí Vagrant a automatizace
-
-## Zadání: Instalace Zabbix serveru a agenta pomocí Vagrant
-
-Úvod:
-V tomto úkolu budete instalovat Zabbix server. Vaším cílem je nainstalovat Zabbix server i agenta.
-Vaše samostatná práce bude realizovana pomoci automatizace procesu za pomocí
-shell skriptů a různých nástrojů, což bude bodově zvýhodněno.
-
-## 1. Příprava projektu
-
-- Zprovozněte si svůj studentský repozitář na GitHub Classroom - zabbix02. Přidejte do repozitáře všechny soubory, které budete potřebovat (např. Vagrantfile, provisioning skripty, obrázky, dokumentaci, atd.).
-
-### Příprava prostředí
-
-- Vytvořte adresář pro server a do nej Vagrantfile, který, vytvoří virtuální server přidejte je do github repozitáře. Nezapomenou na .gitignore pro soubory a adresáře, které nemají být součástí repo.
-- Specifikuje základní parametry (např. RAM 2GB, počet CPU 2, síťové nastavení portforward 22 a 80).
-- Linuxovou distribuci zvolte z examples. Jiná distra než Debian a Ubuntu budou bodově zvýhodněna :-)
-- Pokud použijete provisioning nástroje (např. Bash, Ansible), přidejte je do repozitáře.
-
-## 2. Instalace Zabbixu 7.0 LTS
-
-- Nainstalujte a nastavte webový server (např. Apache/Nginx)
-- Nainstalujte databázi (např. MySQL/MariaDB/PostgreSQL) případně i s TimescaleDB
-- Stáhněte a nainstalujte Zabbix server a jeho komponenty
-- Nakonfigurujte přístup na webové rozhraní
-
-- Nainstalujte Zabbix agent2.
-- Připojte agenta k serveru.
-
-Zaznamenejte všechny kroky instalace do dokumentace formou README.md. Ověřte, že agent2 komunikuje se serverem a data jsou viditelná v Zabbix webovém rozhraní.
-
-## 3. Monitoring
-### Monitorujte SSL certifikát školního webu
-- Importujte hosta sposdk.cz - sposdk.cz_hosts.yaml
-- Zkontrolujte, že se Certifikát https://sposdk.cz monitoruje (Latest data) uložte screen obrazovky do repo
-
-## 4. Dokumentace
-### V repozitáři vytvořte soubor README.md, kde popíšete
-- Postup Vaší instalace (automatizovanou variantu)
-- Způsob spuštění virtuálních strojů pomocí Vagrantu
-- Dále pak ověření funkčnosti Zabbixu (procesy, logy atd.)
-
-## 5. Přiložte snímky obrazovky
-- Běh Zabbix serveru a agenta (logy, procesy, htop, ps, btop).
-- Webové rozhraní Zabbixu. (Každý bude mít svůj Zabbix podepsaný) - proměnná php - $ZBX_SERVER_NAME v zabbix.conf.php
-- Snímky obrazovek budou součástí Vašeho repository adresář ./Images
-
-## 6. Důležité soubory
-
-| File config                   | Komponenta      |
-|-------------------------------|-----------------|
-| Vagrantfile                   | Vagrant         |
-| zabbix_server.conf            | Zabbix server   |
-| zabbix_agent2.conf            | Zabbix agent    |
-| zabbix.conf.php               | Zabbix frontend |
-| apache.conf                   | Apache          |
-| mysql.ini                     | MySQL/MariaDB         |
+vagrant up
 
 
-## 7. Odevzdání
-- Nahrajte svůj projekt do svého GitHub Classroom repozitáře, nezapomenout .gitignore
-- Zkontrolujte, že vše funguje podle zadání - http://localhost:8080 nebo http://localhost:8080/zabbix/ (číslo portu je na Vás)
-- Odevzdejte link na Váš repozitář do Teams
-- Do ./Images vložte screeeny obrazovek (ps, htop, Zabbix Web GUI, monitoring certifikátu školy - Latest Data)
+Po krátké chvíli se virtuální stroj vytvoří, nainstaluje a automaticky nakonfiguruje celý Zabbix server včetně Zabbix Agent2.
+
+Jakmile instalace skončí, otevřeme webový prohlížeč a přejdeme na adresu:
+
+http://localhost:8007/zabbix
+
+
+Zobrazí se přihlašovací stránka Zabbixu.
+Přihlásíme se pomocí výchozích údajů:
+
+Uživatel: Admin
+
+Heslo: zabbix
+
+A tím máme plně funkční Zabbix server připravený k použití.
+
+
+
+
+📝 Popis skriptu (co přesně dělá)
+set -e
+
+Pokud jakýkoliv příkaz skončí chybou, skript se okamžitě zastaví.
+
+1️⃣ Instalace základních balíků
+sudo apt-get update -y
+sudo apt-get install -y net-tools wget mysql-server
+
+
+Aktualizuje seznam balíků.
+
+Instaluje:
+
+net-tools — příkazy jako ifconfig, netstat.
+
+wget — stahování souborů.
+
+mysql-server — databáze, kterou Zabbix potřebuje.
+
+2️⃣ Přidání Zabbix repozitáře
+wget https://repo.zabbix.com/.../zabbix-release_latest_7.0+ubuntu24.04_all.deb
+sudo dpkg -i zabbix-release_latest_7.0+ubuntu24.04_all.deb
+sudo apt update -y
+
+
+Stáhne oficiální Zabbix repo.
+
+Nainstaluje ho.
+
+Aktualizuje balíčky, aby systém věděl o Zabbix balících.
+
+3️⃣ Instalace Zabbix serveru, frontendů a agentů
+sudo apt install -y zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent2
+sudo apt install -y zabbix-agent2-plugin-mongodb zabbix-agent2-plugin-mssql zabbix-agent2-plugin-postgresql
+
+
+Instaluje:
+
+Zabbix server (backend)
+
+PHP frontend + Apache (webové rozhraní)
+
+SQL skripty (databázová schémata)
+
+Agent2 a jeho pluginy (monitorování MongoDB, MSSQL, PostgreSQL)
+
+4️⃣ Vytvoření MySQL databáze a uživatele
+sudo mysql <<EOF
+CREATE DATABASE zabbix CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+CREATE USER 'zabbix'@'localhost' IDENTIFIED BY 'vagrant';
+GRANT ALL PRIVILEGES ON zabbix.* TO 'zabbix'@'localhost';
+SET GLOBAL log_bin_trust_function_creators = 1;
+EOF
+
+
+Vytvoří databázi zabbix.
+
+Vytvoří uživatele zabbix s heslem vagrant.
+
+Povolí mu přístup ke všemu v této databázi.
+
+Dočasně zapne možnost vytvářet funkce a triggery (nutné pro import Zabbix schématu).
+
+5️⃣ Import Zabbix SQL schématu
+zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | \
+mysql --default-character-set=utf8mb4 -uzabbix -pvagrant zabbix
+
+
+Rozbalí SQL schéma.
+
+Importuje ho do MySQL databáze zabbix.
+
+Tím se vytvoří tabulky, indexy, uložené funkce atd.
+
+6️⃣ Vypnutí funkce log_bin_trust_function_creators
+sudo mysql <<EOF
+SET GLOBAL log_bin_trust_function_creators = 0;
+EOF
+
+
+Vrátí původní nastavení MySQL, aby nebylo příliš otevřené.
+
+7️⃣ Nastavení hesla v Zabbix server configu
+sudo sed -i "s/^# DBPassword=.*/DBPassword=vagrant/" /etc/zabbix/zabbix_server.conf
+
+
+Aktivuje řádek DBPassword a přidá heslo vagrant.
+
+Zálohovací kontrola:
+
+grep -q "^DBPassword=vagrant" /etc/zabbix/zabbix_server.conf || \
+echo "DBPassword=vagrant" | sudo tee -a /etc/zabbix/zabbix_server.conf > /dev/null
+
+
+Pokud řádek v souboru ještě není, přidá ho.
+
+8️⃣ Restart a povolení služeb
+sudo systemctl restart zabbix-server zabbix-agent2 apache2
+sudo systemctl enable zabbix-server zabbix-agent2 apache2
+
+
+Restartuje služby, aby načetly konfiguraci.
+
+Povolit služby při startu systému.
+
+✔️ Stručně: Co skript dělá?
+
+Nainstaluje MySQL, Zabbix server, agent a webové rozhraní.
+
+Vytvoří databázi a uživatele pro Zabbix.
+
+Importuje kompletní Zabbix databázové schéma.
+
+Nastaví Zabbix server, aby mohl používat heslo.
+
+Spustí všechny služby a nastaví je, aby se automaticky zapínaly.
+
+
+
+
+
+V konfiguračním souboru zabbix.conf.php bylo potřeba upravit několik hodnot, aby se Zabbix frontend správně připojil k databázi a zobrazoval správné jméno serveru. Konkrétně byly nastaveny tyto položky:
+
+$DB['TYPE']     = 'MYSQL';
+$DB['SERVER']   = 'localhost';
+$DB['PORT']     = '0';
+$DB['DATABASE'] = 'zabbix';
+$DB['USER']     = 'zabbix';
+$DB['PASSWORD'] = 'vagrant';
+
+$ZBX_SERVER_NAME = 'Jirout';
+
+
+část $DB[...] definuje připojení k MySQL databázi vytvořené ve skriptu
+
+$ZBX_SERVER_NAME určuje název Zabbix serveru viditelný v horní části webového rozhraní
+
+Díky tomu se frontend správně připojí a zobrazí server pod zvoleným jménem.
+
+
+
+
+
+
+
+🖥️ Přidání hosta do Zabbixu
+
+V levém menu otevři Data collection → Hosts.
+
+Vpravo klikni na Import.
+
+Nahraj svůj exportovaný soubor s hostem a potvrď import.
+Tím se host přidá do Zabbixu.
+
+🔍 Otestování, zda host správně funguje
+
+Otevři seznam hostů a klikni na hosta, kterého jsi právě naimportoval.
+
+Přejdi na záložku Items (položky).
+
+Najdi položku:
+
+Website certificate by Zabbix agent 2: Get
+web.certificate.get[{$CERT.WEBSITE.HOSTNAME},{$CERT.WEBSITE.PORT},{$CERT.WEBSITE.IP}]
+
+
+Klikni na Get → poté Test → a poté Get value and test.
+
+Tím ověříš, že položka funguje a Zabbix je schopný získat data.
+
+📊 Zobrazení dat v Monitoring
+
+V levém menu otevři Monitoring → Hosts.
+
+Najdi svého hosta, klikni na něj pravým tlačítkem myši.
+
+Zvol Latest data.
+
+Zobrazí se aktuální hodnoty, které Zabbix z hosta získává.

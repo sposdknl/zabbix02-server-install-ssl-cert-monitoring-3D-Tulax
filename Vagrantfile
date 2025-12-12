@@ -15,13 +15,10 @@ Vagrant.configure("2") do |config|
     ubuntu.vm.hostname = "ubuntu"
   end
 
-  config.vm.provision "file",
-    source: "id_ed25519.pub",
-    destination: "/home/vagrant/.ssh/me.pub"
 
-  config.vm.provision "shell", inline: <<-SHELL
-    cat /home/vagrant/.ssh/me.pub >> /home/vagrant/.ssh/authorized_keys
-  SHELL
+
+
+
 
     config.vm.provision "shell", path: "install_zabbix.sh"
 

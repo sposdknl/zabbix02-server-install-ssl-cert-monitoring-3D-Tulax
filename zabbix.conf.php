@@ -56,7 +56,7 @@ $DB['VAULT_KEY_FILE']           = '';
 // $ZBX_SERVER                  = '';
 // $ZBX_SERVER_PORT             = '';
 
-$ZBX_SERVER_NAME                = 'adam';
+$ZBX_SERVER_NAME                = 'Jirout';
 
 $IMAGE_FORMAT_DEFAULT   = IMAGE_FORMAT_PNG;
 
